@@ -1,0 +1,8 @@
+hi:
+  errors:
+    session:
+      incorrect_password: गलत पासवर्ड
+      incorrect_email: गलत ईमेल
+      blank_fields: ईमेल या पासवर्ड खाली नहीं हो सकता
+    application:
+      mime_type: माइम प्रकार समर्थित नहीं है

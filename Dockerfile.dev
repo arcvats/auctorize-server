@@ -1,0 +1,35 @@
+FROM ruby:3.1.2-alpine3.16
+
+ENV APP_PATH /mnt/auctorize-server
+ENV LANG C.URF-8
+ENV RUBY_MAJOR 3.1
+ENV RUBY_VERSION 3.1.2
+ENV BUNDLE_VERSION 2.3.19
+ENV BUNDLE_PATH /usr/local/bundle/gems
+ENV RAILS_LOG_TO_STDOUT true
+
+RUN apk update \
+&& apk add \
+git bash less \
+build-base \
+libxml2-dev libxslt-dev \
+postgresql-dev postgresql-client \
+tzdata \
+&& rm -rf /var/cache/apk/* \
+&& mkdir -p $APP_PATH 
+
+RUN gem install bundler --version "$BUNDLE_VERSION" \
+&& rm -rf $GEM_HOME/cache/*
+
+WORKDIR $APP_PATH
+
+COPY Gemfile $APP_PATH
+COPY Gemfile.lock $APP_PATH
+
+RUN bundle check || bundle install --jobs 20 --retry 5
+
+RUN rm -f $APP_PATH/tmp/pids/server.pid
+
+COPY . .
+
+CMD ["bin/rails", "s", "-b", "0.0.0.0"]
